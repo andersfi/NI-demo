@@ -18,7 +18,7 @@ server <- function(input, output) {
                                       unlist(strsplit(plotdata$occurrenceID[i],"\\|")),"</a>"),
                                 collapse=" ")
       }
-    
+    popup3 <- paste0("<strong>Dataposter brukt i indikator: </strong><br>",popup2)
     
     
     leaflet(data = plotdata) %>%
@@ -27,7 +27,7 @@ server <- function(input, output) {
                   fillOpacity = 0.8, 
                   color = "#BDBDC3", 
                   weight = 1, 
-                  popup = popup2) %>%
+                  popup = popup3) %>%
     addLegend("bottomright", pal = pal, values = ~NI,title = "Indikator Aure", labFormat = labelFormat(prefix = ""),
               opacity = 1)
     
