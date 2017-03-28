@@ -11,15 +11,18 @@
 #
 #################################################################
 
+
+
 # libraries
   packages.needed <- setdiff(
-    c('sp'),
+    c('sp','rmapshaper'),
     rownames(installed.packages())
   )
   if(length(packages.needed)) install.packages(packages.needed)
   
   # load libraries
   require("sp")
+  require("rmapshaper")
 
 # extarnal functions needed 
 source("func_download_and_parse.R")
@@ -89,6 +92,9 @@ NI <- NI %>% mutate(NI = 1 - (decreasing/total))
 NImunic <- NI
 NIcounty <- NI %>% mutate(ID_1=countyID)
 county_sp2 <- merge(county_sp,NIcounty)
+
+county_sp2 <- rmapshaper::ms_simplify(county_sp2,keep = 0.001)
+
 
 saveRDS(county_sp2,"county_sp2.RDS")
 

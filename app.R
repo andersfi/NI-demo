@@ -47,6 +47,8 @@ ui <- fluidPage(
         er linket opp til GBIF sin portal. Dette muliggjøres ved å la data flyter inn til Naturindeks-
         beregninger via NINA sin IPT"),
       br(),
+      a(href="https://github.com/andersfi/NI-demo",target="_blank","Kode på GitHub"),
+      br(),
       img(src="ntnu-vm.png", width = 100),
       img(src="nina_logo.png", width = 100)
       
