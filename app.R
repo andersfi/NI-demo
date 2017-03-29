@@ -39,22 +39,14 @@ server <- function(input, output) {
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
-      h3("Eksempel på dataflyt: Naturindeks"),
-      br(),
-      p("Enkel demonstrasjon på dataflyt inn i NI."),
-      br(),
-      p("Kartet viser indikator Aure, hvor hver enkelt datapost bak den fylkesvise naturindeksen 
-        er linket opp til GBIF sin portal. Dette muliggjøres ved å la data flyter inn til Naturindeks-
-        beregninger via NINA sin IPT"),
-      br(),
-      a(href="https://github.com/andersfi/NI-demo",target="_blank","Kode på GitHub"),
+      includeMarkdown("text_ni_demo.md"),
       br(),
       img(src="ntnu-vm.png", width = 100),
       img(src="nina_logo.png", width = 100)
       
     ),
     mainPanel(
-      tags$style(type = "text/css", "NImap {height: calc(90vh - 70px) !important;}"),
+      tags$style(type = "text/css", "#NImap {height: calc(90vh - 70px) !important;}"),
       leafletOutput("NImap")
     )
   )

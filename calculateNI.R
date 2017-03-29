@@ -40,9 +40,12 @@ datsets_to_load <- c(
 outdata <- f_download_and_parse_dwc_a(datsets_to_load)
 
 #................................................................................
-# Filter data (here, just simple filtering of all records without lat/long info)
+# Filter data: 
+# 1. filtering of all records without lat/long info
+# 2. filter out only trout data
 #..................................................................................
-outdata <- outdata %>% filter(!is.na(decimalLatitude),!is.na(decimalLongitude)) # remove datapoint
+outdata <- outdata %>% filter(!is.na(decimalLatitude),!is.na(decimalLongitude)) 
+outdata <- outdata %>% filter(scientificName=="Salmo trutta") 
 
 #........................................
 # Assign municipality to data 
@@ -97,7 +100,7 @@ county_sp2 <- rmapshaper::ms_simplify(county_sp2,keep = 0.001)
 
 
 saveRDS(county_sp2,"county_sp2.RDS")
-
+saveRDS(outdata,"outdata.RDS")
 
 
 

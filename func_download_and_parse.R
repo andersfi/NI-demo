@@ -56,32 +56,30 @@ f_download_and_parse_dwc_a <- function(datsets_to_load){
     }
   }
   
-  # spread measurementandfacts
-  measurementorfact_event <- measurementorfact %>% select(eventID,occurrenceID,measurementType,measurementValue) 
-  mof_temp <- spread(data=measurementorfact_temp,key=measurementType,value=measurementValue) 
+  # spread occurrence measurementandfacts (only intersted in mof's for occurrences in this example)
+  measurementorfact_event <- measurementorfact %>% select(occurrenceID,measurementType,measurementValue) 
+  mof_temp <- spread(data=measurementorfact_event,key=measurementType,value=measurementValue) # don't realy need to spread this example
 
   # join together occurrence and event
   outdata <- left_join(occurrence,event)
-  
-  # join together mof and outata
-  # NB needs sepparate functions for mofs with or without occurrence and eventID to make generic
-  mof_event <- mof_temp %>% filter(!is.null(eventID) & is.null(occurrenceID)) %>% select(-occurrenceID)
-  mof_occ <- mof_temp %>% filter(is.null(eventID) & !is.null(occurrenceID)) %>% select(-eventID)
-  mof_occev <- mof_temp %>% filter(!is.null(eventID) & !is.null(occurrenceID))
-  
-  outdata <- left_join(outdata,mof_occev) 
-  outdata <- left_join(outdata,mof_occ)
-  outdata <- left_join(outdata,mof_event)
+  outdata <- left_join(outdata,mof_temp)
   
   # attach gbifID to dataframe (using api call in for loop for now - innefficient)
-  # for(i in 1:dim(outdata)[1]){
-  #   outdata$gbifID[i] <- fromJSON(paste("http://api.gbif.org/v1/occurrence/search?OCCURRENCE_ID=+",outdata$occurrenceID[i],sep=""))$results$key
-  # }
-  # 
-  # Temporary hack in wait for dataset to get indexed in GBIF
   for(i in 1:dim(outdata)[1]){
-    outdata$gbifID[i] <- fromJSON(paste("http://api.gbif.org/v1/occurrence/search?OCCURRENCE_ID=+","urn:uuid:1883389f-1537-4aa1-a7c3-3980930481c3",sep=""))$results$key
+  temp  <- try(fromJSON(paste("http://api.gbif.org/v1/occurrence/search?OCCURRENCE_ID=+",outdata$occurrenceID[i],sep=""))$results$key, silent = TRUE)
+  if (!is.null(temp)){
+    outdata$gbifID[i] <- temp
+  } else {
+    outdata$gbifID[i] <- NA
   }
+  print("resolving:")
+  print(i)
+  }
+  # 
+  # # Temporary hack in wait for dataset to get indexed in GBIF
+  # for(i in 1:dim(outdata)[1]){
+  #   outdata$gbifID[i] <- fromJSON(paste("http://api.gbif.org/v1/occurrence/search?OCCURRENCE_ID=+","urn:uuid:1883389f-1537-4aa1-a7c3-3980930481c3",sep=""))$results$key
+  # }
   
   
   return(outdata)
